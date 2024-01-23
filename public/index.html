@@ -1,0 +1,70 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Prices</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Crypto Prices</h1>
+    </header>
+
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Last Price</th>
+                    <th>Buy Price</th>
+                    <th>Sell Price</th>
+                    <th>Volume</th>
+                    <th>Base Unit</th>
+                </tr>
+            </thead>
+            <tbody id="cryptoTableBody">
+                <!-- Data will be populated dynamically using JavaScript -->
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', fetchAndShowData);
+
+        function fetchAndShowData() {
+            const tableBody = document.getElementById('cryptoTableBody');
+
+            // Fetch data from the server using POST method
+            fetch('/fetch-store-and-show', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    // Clear existing table rows
+                    tableBody.innerHTML = '';
+
+                    // Populate the table with fetched data
+                    data.data.forEach(entry => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${entry.name}</td>
+                            <td>${entry.last}</td>
+                            <td>${entry.buy}</td>
+                            <td>${entry.sell}</td>
+                            <td>${entry.volume}</td>
+                            <td>${entry.base_unit}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+    </script>
+
+</body>
+</html>
